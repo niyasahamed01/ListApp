@@ -8,8 +8,8 @@ import javax.inject.Inject
 class ApiHelperImpl @Inject constructor(private val apiService: ApiService) {
 
     suspend fun getWeather(
-        lat: Float?,
-        long: Float?,
+        lat: Double?,
+        long: Double?,
         key: String?
     ): Response<WeatherResponse?> = apiService.getWeather(lat, long, key)
 

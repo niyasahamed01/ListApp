@@ -1,5 +1,6 @@
 package com.example.listingapp.view.fragment
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.location.LocationManager
 import android.os.Bundle
@@ -25,6 +26,7 @@ class WeatherDetailFragment : Fragment() {
     var gpsStatus = false
     private lateinit var binding: FragmentWeatherBinding
 
+    @SuppressLint("SetTextI18n")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

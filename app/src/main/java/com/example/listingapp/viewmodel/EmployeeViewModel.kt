@@ -1,11 +1,14 @@
 package com.example.listingapp.viewmodel
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import com.example.listingapp.other.Constants.KEY
-import com.example.listingapp.other.Constants.MINUTELY
 import com.example.listingapp.paging.EmployeeRemoteMediator
 import com.example.listingapp.repo.EmployeeRepository
 import com.example.listingapp.response.Name
@@ -46,7 +49,7 @@ class EmployeeViewModel @Inject constructor(
     val response: LiveData<NetworkResult<WeatherResponse?>> = _response
 
 
-    fun getWeather(lat: Float, long: Float) = viewModelScope.launch {
+    fun getWeather(lat: Double, long: Double) = viewModelScope.launch {
         repository.getWeather(
             lat = lat,
             long = long,

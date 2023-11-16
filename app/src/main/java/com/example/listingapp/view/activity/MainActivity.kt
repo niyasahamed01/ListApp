@@ -1,6 +1,7 @@
 package com.example.listingapp.view.activity
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Geocoder
@@ -50,7 +51,7 @@ class MainActivity : AppCompatActivity() {
     @JvmField
     internal var preferenceManager: PreferenceManager? = null
 
-    lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
 
 
     @InternalCoroutinesApi
@@ -89,8 +90,8 @@ class MainActivity : AppCompatActivity() {
                     } else {
                         Log.d("Debug:", "Your Location:" + location.longitude)
                         mainViewModel.getWeather(
-                            location.latitude.toFloat(),
-                            location.longitude.toFloat()
+                            location.latitude,
+                            location.longitude
                         )
                         setObserver()
                     }
@@ -129,12 +130,12 @@ class MainActivity : AppCompatActivity() {
 
     private val locationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
-            var lastLocation: Location = locationResult.lastLocation
+            val lastLocation: Location = locationResult.lastLocation
             Log.d("Debug:", "your last last location: " + lastLocation.longitude.toString())
 
             mainViewModel.getWeather(
-                lastLocation.latitude.toFloat(),
-                lastLocation.longitude.toFloat()
+                lastLocation.latitude,
+                lastLocation.longitude
             )
             setObserver()
         }
@@ -169,7 +170,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun isLocationEnabled(): Boolean {
-        var locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(
             LocationManager.NETWORK_PROVIDER
         )
@@ -195,6 +196,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setObserver() {
         mainViewModel.response.observe(this) { response ->
             when (response) {

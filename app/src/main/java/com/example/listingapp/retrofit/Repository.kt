@@ -16,8 +16,8 @@ class Repository @Inject constructor(
 ) : BaseApiResponse() {
 
     suspend fun getWeather(
-        lat: Float?,
-        long: Float?,
+        lat: Double?,
+        long: Double?,
         key: String?
     ): Flow<NetworkResult<WeatherResponse?>> {
         return flow<NetworkResult<WeatherResponse?>> {

@@ -41,30 +41,18 @@ object DiModules {
     @Singleton
     @Provides
     fun provideRetrofit(): Retrofit {
+
+        // Create an OkHttpClient with logging interceptor
+        val loggingInterceptor = HttpLoggingInterceptor()
+        loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
+
+        val okHttpClient = OkHttpClient.Builder()
+            .addInterceptor(loggingInterceptor)
+            .build()
+
         return Retrofit.Builder().baseUrl(BASE_URL_LIST)
-            .client(getOkHttpClient().build())
+            .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create()).build()
-    }
-
-    private fun getOkHttpClient(): OkHttpClient.Builder {
-        val interceptor = HttpLoggingInterceptor()
-        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
-        val client: OkHttpClient.Builder = OkHttpClient.Builder()
-        client.readTimeout(60, TimeUnit.SECONDS)
-        client.writeTimeout(60, TimeUnit.SECONDS)
-        client.connectTimeout(60, TimeUnit.SECONDS)
-        client.addInterceptor(interceptor)
-        client.addInterceptor(Interceptor { chain ->
-            val request = chain.request()
-            chain.proceed(request)
-        })
-
-        client.addInterceptor { chain ->
-            val builder = chain.request().newBuilder()
-            chain.proceed(builder.build())
-        }
-
-        return client
     }
 
     @Singleton
