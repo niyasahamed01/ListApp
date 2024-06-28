@@ -96,22 +96,13 @@ class ResultFragment : Fragment(), AdapterClickListeners {
     @ExperimentalPagingApi
     fun filter(query: String?) {
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.paging.collectLatest {
+            viewModel.paging.collectLatest { it->
                 val data = it.filter { query?.let { it1 -> it.name?.first?.contains(it1) }!! }
                 employeePagingAdapter.submitData(data)
             }
         }
     }
 
-
-    private fun searchDatabase(query: String) {
-        //  val searchQuery = "%$query%"
-        //viewModel.searchDatabase(searchQuery).observe(viewLifecycleOwner, { list ->
-        // list.let {
-        //    newsPagingAdapter.setData(it)
-        // }
-        // })
-    }
 
     override fun onClickListeners(result: ModelResult) {
         findNavController().navigate(

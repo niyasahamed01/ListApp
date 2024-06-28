@@ -2,26 +2,20 @@ package com.example.listingapp.di
 
 import android.content.Context
 import com.example.listingapp.other.Constants.BASE_URL_LIST
-import com.example.listingapp.other.Constants.BASE_URL_WEATHER
 import com.example.listingapp.preference.PreferenceManager
 import com.example.listingapp.repo.EmployeeRepository
 import com.example.listingapp.retrofit.*
-
+import com.example.listingapp.room.EmployeeDao
+import com.example.listingapp.room.EmployeeDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ApplicationComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
-
-import com.example.listingapp.room.EmployeeDao
-import com.example.listingapp.room.EmployeeDatabase
 import dagger.hilt.components.SingletonComponent
-import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 

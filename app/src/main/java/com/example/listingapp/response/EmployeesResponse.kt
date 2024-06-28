@@ -1,12 +1,11 @@
 package com.example.listingapp.response
 
 import android.os.Parcelable
-import androidx.annotation.NonNull
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
-import kotlinx.android.parcel.Parcelize
-import kotlinx.android.parcel.RawValue
+import kotlinx.parcelize.Parcelize
+import kotlinx.parcelize.RawValue
 
 data class EmployeesResponse(
     @SerializedName("info")
@@ -32,10 +31,8 @@ data class Info(
 @Entity
 data class ModelResult(
     @PrimaryKey(autoGenerate = false)
-    @NonNull
     @SerializedName("id")
     val id: Id,
-    @NonNull
     @SerializedName("gender")
     val gender: String,
     @SerializedName("picture")
@@ -74,7 +71,6 @@ data class Id(
 @Entity(tableName = "name")
 data class Name(
     @PrimaryKey
-    @NonNull
     @SerializedName("first")
     val first: String,
     @SerializedName("last")
@@ -93,4 +89,3 @@ data class Picture(
     @SerializedName("thumbnail")
     val thumbnail: String?
 ) : Parcelable
-

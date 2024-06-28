@@ -21,7 +21,7 @@ class Repository @Inject constructor(
         key: String?
     ): Flow<NetworkResult<WeatherResponse?>> {
         return flow<NetworkResult<WeatherResponse?>> {
-            safeApiCall { remoteDataSource.getWeather(lat, long, key) }?.let { emit(it) }
+            emit(safeApiCall { remoteDataSource.getWeather(lat, long, key) })
         }.flowOn(Dispatchers.IO)
     }
 
