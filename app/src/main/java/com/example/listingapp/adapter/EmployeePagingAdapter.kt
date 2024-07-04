@@ -1,67 +1,72 @@
 package com.example.listingapp.adapter
 
-import android.annotation.SuppressLint
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.databinding.ViewDataBinding
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.listingapp.R
 import com.example.listingapp.databinding.ListItemBinding
 import com.example.listingapp.listener.AdapterClickListeners
 import com.example.listingapp.response.ModelResult
-import com.example.listingapp.BR
 
+class EmployeePagingAdapter(
+    private val listener: AdapterClickListeners
+) : PagingDataAdapter<ModelResult, EmployeePagingAdapter.MyViewHolder>(DIFF_CALLBACK) {
 
-class EmployeePagingAdapter(private val adapterClickListeners: AdapterClickListeners) :
-    PagingDataAdapter<ModelResult, EmployeePagingAdapter.MyViewHolder>(DIFF_UTIL) {
+    companion object {
+        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<ModelResult>() {
+            override fun areItemsTheSame(oldItem: ModelResult, newItem: ModelResult): Boolean {
+                return oldItem.id == newItem.id
+            }
 
+            override fun areContentsTheSame(oldItem: ModelResult, newItem: ModelResult): Boolean {
+                return oldItem == newItem
+            }
+        }
+    }
 
-    override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int
-    ): MyViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val binding = ListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return MyViewHolder(binding)
     }
 
-    inner class MyViewHolder(val viewDataBinding: ViewDataBinding) :
-        RecyclerView.ViewHolder(viewDataBinding.root)
 
-    @SuppressLint("SuspiciousIndentation")
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-
-        val item = getItem(position)
-
-        holder.viewDataBinding.setVariable(BR.result, item)
-
-        if(item?.picture?.large!=null && item.picture.large.isNotEmpty())
-
-        Glide.with(holder.viewDataBinding.root).load(item.picture.large)
-            .into(holder.viewDataBinding.root.findViewById(R.id.imgSource))
-
-        holder.viewDataBinding.root.setOnClickListener {
-            if (item != null) {
-                adapterClickListeners.onClickListeners(item)
+        try {
+            val itemCount = itemCount // Cache the item count to avoid calling it multiple times
+            if (position in 0 until itemCount) {
+                val item = getItem(position)
+                item?.let { holder.bind(it, listener) }
+            } else {
+                Log.e("EmployeePagingAdapter", "Attempted to bind item at invalid position $position. Item count: $itemCount")
             }
+        } catch (e: IndexOutOfBoundsException) {
+            Log.e("EmployeePagingAdapter", "IndexOutOfBoundsException at position $position: ${e.message}")
         }
 
     }
 
-    companion object {
 
-        val DIFF_UTIL = object : DiffUtil.ItemCallback<ModelResult>() {
-            override fun areItemsTheSame(oldItem: ModelResult, newItem: ModelResult): Boolean {
-                return oldItem == newItem
-            }
+    inner class MyViewHolder(private val binding: ListItemBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
-            @SuppressLint("DiffUtilEquals")
-            override fun areContentsTheSame(oldItem: ModelResult, newItem: ModelResult): Boolean {
-                return oldItem.gender == newItem.gender
+        fun bind(employee: ModelResult, clickListener: AdapterClickListeners) {
+            binding.result = employee
+            binding.root.setOnClickListener {
+                clickListener.onClickListeners(employee)
             }
+            employee.picture?.large?.let { largeUrl ->
+                if (largeUrl.isNotEmpty()) {
+                    Glide.with(binding.root)
+                        .load(largeUrl)
+                        .into(binding.imgSource)
+                }
+            }
+            binding.executePendingBindings()
         }
     }
+
 
 }

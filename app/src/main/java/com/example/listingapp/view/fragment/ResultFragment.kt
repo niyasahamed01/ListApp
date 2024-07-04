@@ -1,27 +1,30 @@
 package com.example.listingapp.view.fragment
 
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.core.os.bundleOf
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.paging.ExperimentalPagingApi
-import androidx.paging.filter
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.listingapp.R
-import com.example.listingapp.response.ModelResult
-import dagger.hilt.android.AndroidEntryPoint
-import com.example.listingapp.listener.AdapterClickListeners
+import com.example.listingapp.adapter.EmployeeLoadStateAdapter
 import com.example.listingapp.adapter.EmployeePagingAdapter
 import com.example.listingapp.databinding.FragmentResultBinding
+import com.example.listingapp.listener.AdapterClickListeners
+import com.example.listingapp.other.SpacesItemDecoration
+import com.example.listingapp.response.ModelResult
 import com.example.listingapp.viewmodel.EmployeeViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -30,79 +33,79 @@ import kotlinx.coroutines.launch
 class ResultFragment : Fragment(), AdapterClickListeners {
 
     private lateinit var binding: FragmentResultBinding
-
     private val viewModel by viewModels<EmployeeViewModel>()
-
     private val employeePagingAdapter = EmployeePagingAdapter(this)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = DataBindingUtil.inflate(
-            layoutInflater,
-            R.layout.fragment_result,
-            container,
-            false
-        )
+        binding = FragmentResultBinding.inflate(inflater, container, false)
         return binding.root
-
     }
 
-    @ExperimentalPagingApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        initStartView()
-        setObserver()
-        searchData()
+        super.onViewCreated(view, savedInstanceState)
+        initRecyclerView()
+        observeData()
+        setupSearch()
     }
 
-    private fun initStartView() {
-        binding.rvItem.run {
-            adapter = employeePagingAdapter
-            layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL).apply {
-                gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS
+    private fun initRecyclerView() {
+
+        binding.rvItem.layoutManager =
+            StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+
+        // Adding item decoration for spacing
+        val spacingInPixels = resources.getDimensionPixelSize(com.intuit.sdp.R.dimen._5sdp)
+        binding.rvItem.addItemDecoration(SpacesItemDecoration(spacingInPixels))
+        binding.rvItem.adapter = employeePagingAdapter
+        binding.rvItem.adapter = employeePagingAdapter.withLoadStateHeaderAndFooter(
+            header = EmployeeLoadStateAdapter { employeePagingAdapter.retry() },
+            footer = EmployeeLoadStateAdapter { employeePagingAdapter.retry() }
+        )
+
+        employeePagingAdapter.addLoadStateListener { loadState ->
+            val isListEmpty =
+                loadState.refresh is LoadState.NotLoading && employeePagingAdapter.itemCount == 0
+            binding.noDataFound.visibility = if (isListEmpty) View.VISIBLE else View.GONE
+            binding.rvItem.visibility = if (isListEmpty) View.GONE else View.VISIBLE
+
+            // Handle errors
+            val errorState = loadState.source.refresh as? LoadState.Error
+            errorState?.let {
+                Toast.makeText(requireContext(), "Error: ${it.error}", Toast.LENGTH_LONG).show()
             }
-            setHasFixedSize(true)
         }
     }
 
-    @ExperimentalPagingApi
-    private fun setObserver() {
+    private fun observeData() {
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.paging.collectLatest {
-                employeePagingAdapter.submitData(it)
+            viewModel.pagingData.collectLatest { pagingData ->
+                employeePagingAdapter.submitData(pagingData)
             }
         }
     }
 
-    @ExperimentalPagingApi
-    private fun searchData() {
+    private fun setupSearch() {
         binding.editText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            }
-
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable?) {
-                if (binding.editText.length() > 0) {
-                    filter(s.toString())
+                val query = s?.toString()?.trim() ?: ""
+                viewModel.setSearchQuery(query)
+                if (query.isEmpty()) {
+                    hideKeyboard()
                 }
             }
         })
     }
 
-
-    @ExperimentalPagingApi
-    fun filter(query: String?) {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.paging.collectLatest { it->
-                val data = it.filter { query?.let { it1 -> it.name?.first?.contains(it1) }!! }
-                employeePagingAdapter.submitData(data)
-            }
-        }
+    private fun hideKeyboard() {
+        val imm =
+            requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(binding.editText.windowToken, 0)
     }
-
 
     override fun onClickListeners(result: ModelResult) {
         findNavController().navigate(
@@ -110,5 +113,4 @@ class ResultFragment : Fragment(), AdapterClickListeners {
             bundleOf("result" to result)
         )
     }
-
 }

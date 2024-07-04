@@ -62,8 +62,8 @@
             android:layout_height="@dimen/_25sdp"
             android:layout_marginTop="@dimen/_10sdp"
             android:layout_marginEnd="@dimen/_8sdp"
-            android:indeterminate="true"
             android:gravity="center"
+            android:indeterminateTint="@android:color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintEnd_toStartOf="@id/image"
             app:layout_constraintTop_toTopOf="parent" />
