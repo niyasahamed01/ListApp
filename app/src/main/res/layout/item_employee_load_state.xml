@@ -1,10 +1,4 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
-<!--    <data>-->
-<!--        <variable-->
-<!--            name="viewModel"-->
-<!--            type="com.example.listingapp.viewmodel.EmployeeLoadStateViewModel" /> &lt;!&ndash; Replace with your ViewModel &ndash;&gt;-->
-<!--    </data>-->
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -36,7 +30,7 @@
             android:id="@+id/retryButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Retry"
+            android:text="@string/retry"
             android:visibility="gone"
             android:layout_marginTop="16dp"/>
 

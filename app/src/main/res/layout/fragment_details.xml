@@ -40,8 +40,6 @@
             android:layout_marginTop="@dimen/_10sdp"
             android:padding="10dp"
             android:text='@{`Name : `+result.name.title+" "+result.name.first+" "+result.name.last}'
-            android:textColor="@color/black"
-            android:textSize="@dimen/_12sdp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/details_image" />
@@ -55,8 +53,6 @@
             android:layout_marginTop="@dimen/_5sdp"
             android:padding="10dp"
             android:text="@{`Gender : ` + result.gender}"
-            android:textColor="@color/black"
-            android:textSize="@dimen/_12sdp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_name" />
@@ -70,8 +66,6 @@
             android:layout_marginTop="@dimen/_5sdp"
             android:padding="10dp"
             android:text="@{`Email : ` +result.email}"
-            android:textColor="@color/black"
-            android:textSize="@dimen/_12sdp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_gender" />
@@ -85,8 +79,6 @@
             android:layout_marginTop="@dimen/_5sdp"
             android:padding="10dp"
             android:text="@{`Age : ` +result.dob.age.toString()}"
-            android:textColor="@color/black"
-            android:textSize="@dimen/_12sdp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_email" />
@@ -100,8 +92,6 @@
             android:layout_marginTop="@dimen/_5sdp"
             android:padding="10dp"
             android:text="@{`Phone : ` +result.phone}"
-            android:textColor="@color/black"
-            android:textSize="@dimen/_12sdp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_age" />

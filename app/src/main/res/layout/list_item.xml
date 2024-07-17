@@ -35,15 +35,14 @@
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/txtName"
-                style="@style/TextAppearance.ListApp.TextView.Title"
+                style="@style/TextAppearance.ListApp.TextView.Small"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_3sdp"
                 android:layout_marginTop="@dimen/_5sdp"
                 android:layout_marginEnd="@dimen/_3sdp"
+                android:layout_marginBottom="@dimen/_3sdp"
                 android:text='@{result.name.first+" "+result.name.last}'
-                android:textColor="@color/black"
-                android:textSize="@dimen/_18sdp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
