@@ -82,6 +82,10 @@ Objects which can be observed by UI about changes.
 
 Stores and manages UI related data in a lifecycle aware way.
 
+**Preference** 
+
+Preference is the basic building block of the Preference Library.
+
 ![media_20240718_124800_6772145024339646945](https://github.com/user-attachments/assets/d909ae3f-2cea-4e21-a1fc-679911cc63f7)
 ![media_20240718_124800_6379028852611328907](https://github.com/user-attachments/assets/e04f22f8-a66e-4319-89e9-71a89128e71b)
 ![media_20240718_124800_6054695211433381593](https://github.com/user-attachments/assets/1589c295-2aea-4663-a90f-58ec9f7ab065)
