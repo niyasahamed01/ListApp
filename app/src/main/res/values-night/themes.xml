@@ -30,4 +30,11 @@
         <item name="android:textSize">@dimen/_14sdp</item>
     </style>
 
+    <!-- Splash Screen Theme -->
+    <style name="Theme.ListingApp.Splash" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:windowBackground">@drawable/splash_screen</item>
+        <item name="android:background">?attr/textColor</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
+
 </resources>

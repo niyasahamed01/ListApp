@@ -3,7 +3,6 @@ package com.example.listingapp.di
 import android.content.Context
 import com.example.listingapp.other.Constants.BASE_URL_LIST
 import com.example.listingapp.preference.PreferenceManager
-import com.example.listingapp.repo.EmployeeRepository
 import com.example.listingapp.retrofit.*
 import com.example.listingapp.room.EmployeeDao
 import com.example.listingapp.room.EmployeeDatabase
@@ -53,14 +52,6 @@ object DiModules {
     @Provides
     fun provideInterface(retrofit: Retrofit): EmployeeInterface {
         return retrofit.create(EmployeeInterface::class.java)
-    }
-
-    @Singleton
-    @Provides
-    fun provideRepository(
-        employeeDao: EmployeeDao
-    ): EmployeeRepository {
-        return EmployeeRepository(employeeDao)
     }
 
     @Singleton
