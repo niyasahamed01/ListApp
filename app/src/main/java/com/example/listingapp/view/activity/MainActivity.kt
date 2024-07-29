@@ -18,7 +18,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
@@ -28,8 +27,8 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import com.example.listingapp.R
 import com.example.listingapp.databinding.ActivityMainBinding
+import com.example.listingapp.other.ApiCallManager
 import com.example.listingapp.other.MyWorker
-import com.example.listingapp.other.NotificationHelper
 import com.example.listingapp.preference.PreferenceManager
 import com.example.listingapp.preference.WEATHER_DATA
 import com.example.listingapp.util.NetworkResult
@@ -62,6 +61,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationRequest: LocationRequest
+    private lateinit var apiCallManager: ApiCallManager
 
     companion object {
         private const val CHANNEL_ID = "your_channel_id"
@@ -78,6 +78,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        apiCallManager = ApiCallManager(this)
 
         locationRequest = LocationRequest.create().apply {
             priority = LocationRequest.PRIORITY_HIGH_ACCURACY
@@ -106,12 +107,17 @@ class MainActivity : AppCompatActivity() {
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED
         ) {
-            // Request location updates
-            fusedLocationClient.requestLocationUpdates(
-                locationRequest,
-                locationCallback,
-                Looper.getMainLooper()
-            )
+            // Check if the API call limit has been reached
+            if (apiCallManager.canMakeApiCall()) {
+                // Request location updates
+                fusedLocationClient.requestLocationUpdates(
+                    locationRequest,
+                    locationCallback,
+                    Looper.getMainLooper()
+                )
+            } else {
+                Toast.makeText(this, "API call limit reached for today", Toast.LENGTH_SHORT).show()
+            }
         } else {
             // Request location permission
             requestLocationPermission()
@@ -196,6 +202,10 @@ class MainActivity : AppCompatActivity() {
                 val latitude = location.latitude
                 val longitude = location.longitude
                 mainViewModel.getWeather(latitude, longitude)
+
+                // Record the API call
+                apiCallManager.recordApiCall()
+
             }
         }
     }
@@ -304,7 +314,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun chooseThemeDialog() {
 
-        val themes = arrayOf("Light", "Dark", "System default")
+        val themes = arrayOf(LIGHT, DARK, DEFAULT)
         val checkedItem = when (preferenceManager?.getThemeMode()) {
             AppCompatDelegate.MODE_NIGHT_NO -> 0
             AppCompatDelegate.MODE_NIGHT_YES -> 1

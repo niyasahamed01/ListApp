@@ -9,6 +9,4 @@
     <color name="white">#FFFFFFFF</color>
     <color name="textColorLight">@android:color/black</color>
     <color name="textColorDark">@android:color/white</color>
-    <color name="light_background">#FFFFFF</color> <!-- White background for light theme -->
-    <color name="dark_background">#000000</color> <!-- Black background for dark theme -->
 </resources>
