@@ -68,12 +68,13 @@ class EmployeeViewModel @Inject constructor(
 
 
     fun getWeather(lat: Double, long: Double) = viewModelScope.launch {
-        repository.getWeather(
-            lat = lat,
-            long = long,
-            key = KEY
-        ).collect { values ->
-            _response.value = values
+        try {
+            repository.getWeather(lat = lat, long = long, key = KEY)
+                .collect { values ->
+                    _response.value = values
+                }
+        } catch (e: Exception) {
+            _response.value = NetworkResult.Error(e.message)
         }
     }
 
