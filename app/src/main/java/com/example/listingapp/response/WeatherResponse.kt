@@ -6,10 +6,10 @@ data class WeatherResponse(
     @SerializedName("count")
     val count: Int?,
     @SerializedName("data")
-    val data: List<Data>?
+    val data: List<WeatherData>?
 )
 
-data class Data(
+data class WeatherData(
     @SerializedName("city_name")
     val cityName: String?,
     @SerializedName("clouds")

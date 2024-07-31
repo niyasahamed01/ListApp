@@ -1,4 +1,4 @@
-package com.example.listingapp.other
+package com.example.listingapp.util
 
 import android.content.Context
 import android.content.SharedPreferences

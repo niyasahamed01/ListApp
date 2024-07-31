@@ -80,7 +80,6 @@ data class Name(
 ) : Parcelable
 
 @Parcelize
-
 data class Picture(
     @SerializedName("large")
     val large: String?,

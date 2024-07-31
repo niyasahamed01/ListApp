@@ -36,32 +36,30 @@ class EmployeeViewModel @Inject constructor(
 
     private val searchQuery = MutableStateFlow("")
 
-    // Flow of PagingData that emits whenever the searchQuery or data changes
-    @OptIn(ExperimentalPagingApi::class, ExperimentalCoroutinesApi::class)
-    val pagingData: Flow<PagingData<ModelResult>> = searchQuery.flatMapLatest { query ->
-        Pager(
-            config = PagingConfig(
-                pageSize = NETWORK_PAGE_SIZE,
-                enablePlaceholders = false // Ensure placeholders are disabled for accurate page handling
-            ),
-            remoteMediator = EmployeeRemoteMediator(
-                employeeDao,
-                employeeInterface
-            )
-        ) {
-            if (query.isBlank()) {
-                employeeDao.getAllEmployees()
-            } else {
-                employeeDao.searchEmployees("%$query%")
-            }
-        }.flow.cachedIn(viewModelScope)
-    }
+    @OptIn(ExperimentalCoroutinesApi::class, ExperimentalPagingApi::class)
+    val pagingData: Flow<PagingData<ModelResult>> = searchQuery
+        .flatMapLatest { query ->
+            Pager(
+                config = PagingConfig(
+                    pageSize = NETWORK_PAGE_SIZE,
+                    enablePlaceholders = false
+                ),
+                remoteMediator = if (query.isBlank()) {
+                    EmployeeRemoteMediator(employeeDao, employeeInterface)
+                } else null,
+                pagingSourceFactory = {
+                    if (query.isBlank()) {
+                        employeeDao.getAllEmployees()
+                    } else {
+                        employeeDao.searchEmployees("%$query%")
+                    }
+                }
+            ).flow.cachedIn(viewModelScope)
+        }
 
-    // Function to set search query and trigger data refresh
     fun setSearchQuery(query: String) {
         searchQuery.value = query
     }
-
 
     private val _response: MutableLiveData<NetworkResult<WeatherResponse?>> = MutableLiveData()
     val response: LiveData<NetworkResult<WeatherResponse?>> = _response

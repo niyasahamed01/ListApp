@@ -19,6 +19,7 @@
             android:background="@drawable/ic_background"
             android:drawableStart="@drawable/ic_search"
             android:drawablePadding="@dimen/_5sdp"
+            android:imeOptions="actionNone"
             android:hint="@string/search"
             android:padding="@dimen/_10sdp"
             android:textColorHint="@color/black"

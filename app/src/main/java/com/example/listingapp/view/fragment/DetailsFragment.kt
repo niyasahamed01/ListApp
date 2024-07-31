@@ -21,11 +21,11 @@ class DetailsFragment : Fragment() {
 
         val binding = FragmentDetailsBinding.inflate(inflater, container, false)
 
-        val data = requireArguments()["result"] as ModelResult
+        val data = arguments?.get("result") as? ModelResult
 
         binding.result = data
 
-        if (data.picture?.large != null && data.picture.large.isNotEmpty())
+        if (data?.picture?.large != null && data.picture.large.isNotEmpty())
 
             Glide.with(binding.root).load(data.picture.large).into(binding.detailsImage)
 
