@@ -8,7 +8,7 @@ import com.google.gson.GsonBuilder
 
 const val WEATHER_DATA = "weather_data"
 const val THEME_MODE = "theme_mode"
-
+const val NOTIFICATION_SHOWN_KEY = "notification_shown"
 /**
  * Preference manager class to store and retrieve data
  * @param context is required to the shared Preference
@@ -51,5 +51,15 @@ class PreferenceManager(context: Context) {
      */
     fun saveThemeMode(themeMode: Int) {
         preferences.edit().putInt(THEME_MODE, themeMode).apply()
+    }
+
+    // Check if the notification has been shown
+    fun hasNotificationBeenShown(): Boolean {
+        return preferences.getBoolean(NOTIFICATION_SHOWN_KEY, false)
+    }
+
+    // Set the notification shown flag
+    fun setNotificationShown(shown: Boolean) {
+        preferences.edit().putBoolean(NOTIFICATION_SHOWN_KEY, shown).apply()
     }
 }

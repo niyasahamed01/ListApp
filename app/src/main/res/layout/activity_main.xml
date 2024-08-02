@@ -52,7 +52,7 @@
             android:layout_height="@dimen/_30sdp"
             android:layout_marginTop="@dimen/_8sdp"
             android:layout_marginEnd="@dimen/_5sdp"
-            android:src="@drawable/baseline_light_mode_24"
+            android:src="@drawable/ic_light"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

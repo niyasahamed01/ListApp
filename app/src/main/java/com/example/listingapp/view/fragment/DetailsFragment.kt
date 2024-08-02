@@ -25,9 +25,13 @@ class DetailsFragment : Fragment() {
 
         binding.result = data
 
-        if (data?.picture?.large != null && data.picture.large.isNotEmpty())
-
-            Glide.with(binding.root).load(data.picture.large).into(binding.detailsImage)
+        data?.picture?.large?.let { largeUrl ->
+            if (largeUrl.isNotEmpty()) {
+                Glide.with(binding.root)
+                    .load(largeUrl)
+                    .into(binding.detailsImage)
+            }
+        }
 
         return binding.root
     }

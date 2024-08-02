@@ -19,7 +19,7 @@ object NotificationHelper {
     private const val CHANNEL_ID = "your_channel_id"
     private const val CHANNEL_NAME = "Weather Channel"
     private const val CHANNEL_DESCRIPTION = "Weather updates"
-    private const val NOTIFICATION_ID = 1
+    const val NOTIFICATION_ID = 1
 
     private lateinit var notificationManager: NotificationManager
 
@@ -52,6 +52,7 @@ object NotificationHelper {
 
         val intent = Intent(context, MainActivity::class.java).apply {
             putExtra("navigate_to_fragment", "WeatherFragment")
+            putExtra("notification_clicked", true) // Add this extra
             addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
         }
 
@@ -76,5 +77,7 @@ object NotificationHelper {
             .setAutoCancel(true)
 
         notificationManager.notify(NOTIFICATION_ID, builder.build())
+
+
     }
 }

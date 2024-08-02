@@ -44,25 +44,35 @@ class WeatherDetailFragment : Fragment() {
         binding.tvTemp.text = "Temperature :" + " " + data?.appTemp.toString() + " " + "\u2103"
         binding.tvCity.text = "City :" + " " + data?.cityName
         binding.tvWeather.text = "Weather Report :" + " " + data?.weather?.description
-        binding.tvDateTime.text = "Date & Time: ${data?.datetime?.let { formatDateTime(it) }}"
+        // Assuming 'data' is your object containing the 'datetime' field
+        val formattedDateTime = data?.datetime?.let { formatDateTime(it) } ?: "Date not available"
+        binding.tvDateTime.text = "Date & Time: $formattedDateTime"
         binding.tvSunSet.text = "Sun Set :" + " " + data?.sunset + " " + "PM"
         binding.tvSunRise.text = "Sun Rise :" + " " + data?.sunrise + " " + "AM"
         binding.tvTimeZone.text = "Time Zone :" + " " + data?.timezone
     }
 
-    private fun formatDateTime(dateTime: String): String {
 
+    private fun formatDateTime(dateTime: String): String {
+        // Define the formats you expect
         val formats = listOf(
-            "yyyy-MM-dd HH:mm:ss",
-            "yyyy-MM-dd HH:mm",
-            "yyyy-MM-dd"
+            "yyyy-MM-dd HH:mm:ss", // Full format with seconds
+            "yyyy-MM-dd HH:mm",    // Format with minutes only
+            "yyyy-MM-dd HH",       // Format with hours only
+            "yyyy-MM-dd",          // Date only
+            "yyyy-MM-dd:HH"        // Custom format for cases with colons
         )
+
+        // Normalize the input dateTime if it has a colon in place of a space
+        val normalizedDateTime = dateTime.replace(":", " ", ignoreCase = true)
 
         for (format in formats) {
             try {
                 val inputFormat = SimpleDateFormat(format, Locale.getDefault())
                 val outputFormat = SimpleDateFormat("MMMM dd, yyyy hh:mm a", Locale.getDefault())
-                val date = inputFormat.parse(dateTime)
+
+                // Parse the date
+                val date = inputFormat.parse(normalizedDateTime)
                 if (date != null) {
                     return outputFormat.format(date)
                 }
@@ -72,5 +82,4 @@ class WeatherDetailFragment : Fragment() {
         }
         return "Invalid date"
     }
-
 }
