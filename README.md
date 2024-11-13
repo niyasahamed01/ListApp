@@ -83,10 +83,8 @@ Objects which can be observed by UI about changes.
 
 Stores and manages UI related data in a lifecycle aware way.
 
-
-![Screenshot_1719911009](https://github.com/niyasahamed01/ListApp/assets/96531269/a075e8d9-07a0-4785-a820-d127580392f8)
-![Screenshot_1719810762](https://github.com/niyasahamed01/ListApp/assets/96531269/f47d8e54-b9e9-4e28-b0e6-7aebce92cf7b)
-![Screenshot_1719810757](https://github.com/niyasahamed01/ListApp/assets/96531269/597e2125-f69d-4c27-87e3-47346017d82a)
-![home list](https://github.com/user-attachments/assets/81f1196b-2b0a-498d-86b3-a4d2d93cccdb)
+![home list](https://github.com/user-attachments/assets/e38ed86b-b151-446b-ba65-411bbd7ce6c4)
+![listdetail](https://github.com/user-attachments/assets/390ff76e-2659-4bb4-918e-5bb4e07ca1a9)
+![weatherdetail](https://github.com/user-attachments/assets/d1bdce2c-4519-4dc2-8b4b-64f00d53f796)
 
 
