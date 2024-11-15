@@ -6,92 +6,60 @@ import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import com.example.listingapp.response.ModelResult
 import com.example.listingapp.retrofit.EmployeeInterface
-
 import com.example.listingapp.room.ArticleRemoteKey
 import com.example.listingapp.room.EmployeeDao
-import java.io.InvalidObjectException
 
-@ExperimentalPagingApi
+
+@OptIn(ExperimentalPagingApi::class)
 class EmployeeRemoteMediator(
     private val employeeDao: EmployeeDao,
-    private val employeeInterface: EmployeeInterface,
-    private val initialPage: Int = 1
+    private val employeeInterface: EmployeeInterface
 ) : RemoteMediator<Int, ModelResult>() {
 
     override suspend fun load(
         loadType: LoadType,
         state: PagingState<Int, ModelResult>
     ): MediatorResult {
-
-        return try {
-            // Judging the page number
+        try {
             val page = when (loadType) {
                 LoadType.APPEND -> {
-                    val remoteKey =
-                        getLastRemoteKey(state) ?: throw InvalidObjectException("Invalid")
-                    remoteKey.next ?: return MediatorResult.Success(endOfPaginationReached = true)
+                    val lastItem = state.lastItemOrNull()
+                    val remoteKey = lastItem?.let { employeeDao.getRemoteKeyByModelResult(it.id.toString()) }
+                    remoteKey?.next ?: return MediatorResult.Success(endOfPaginationReached = remoteKey != null)
                 }
                 LoadType.PREPEND -> {
-                    return MediatorResult.Success(endOfPaginationReached = true)
+                    val firstItem = state.firstItemOrNull()
+                    val remoteKey = firstItem?.let { employeeDao.getRemoteKeyByModelResult(it.id.toString()) }
+                    remoteKey?.prev ?: return MediatorResult.Success(endOfPaginationReached = remoteKey != null)
                 }
-                LoadType.REFRESH -> {
-                    val remoteKey = getClosestRemoteKeys(state)
-                    remoteKey?.next?.minus(1) ?: initialPage
-                }
+                LoadType.REFRESH -> 1
             }
 
-            // make network request
-            val response = employeeInterface.getAllEmployee(
-                page,
-                state.config.pageSize
-            )
-            val endOfPagination = response.body()?.results?.size!! < state.config.pageSize
-
+            val response = employeeInterface.getAllEmployee(page, state.config.pageSize)
             if (response.isSuccessful) {
-                response.body()?.let {
-                    // flush our data
-                    if (loadType == LoadType.REFRESH) {
-                        employeeDao.deleteAllEmployees()
-                        employeeDao.deleteAllRemoteKeys()
-                    }
-                    val prev = if (page == initialPage) null else page - 1
-                    val next = if (endOfPagination) null else page + 1
+                val employees = response.body()?.results ?: emptyList()
+                val endOfPaginationReached = employees.isEmpty()
 
-                    val list = response.body()?.results?.map {
-                        ArticleRemoteKey(it.gender, prev, next)
-                    }
-
-                    // make list of remote keys
-                    if (list != null) {
-                        employeeDao.insertAllRemoteKeys(list)
-                    }
-                    // insert to the room
-                    employeeDao.insertEmployees(it.results)
-
+                if (loadType == LoadType.REFRESH) {
+                    employeeDao.deleteAllEmployees()
+                    employeeDao.deleteAllRemoteKeys()
                 }
-                MediatorResult.Success(endOfPagination)
+
+                employeeDao.insertEmployees(employees)
+
+                val prevKey = if (page == 1) null else page - 1
+                val nextKey = if (endOfPaginationReached) null else page + 1
+                val keys = employees.map {
+                    ArticleRemoteKey(it.id.toString(), prevKey, nextKey)
+                }
+                employeeDao.insertAllRemoteKeys(keys)
+
+                return MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
             } else {
-                MediatorResult.Success(endOfPaginationReached = true)
+                return MediatorResult.Error(Exception("Network request failed"))
             }
-
         } catch (e: Exception) {
-            MediatorResult.Error(e)
-        }
-
-    }
-
-    private suspend fun getClosestRemoteKeys(state: PagingState<Int, ModelResult>): ArticleRemoteKey? {
-        return state.anchorPosition?.let {
-            state.closestItemToPosition(it)?.let {
-                employeeDao.getAllREmoteKey(it.gender)
-            }
-        }
-
-    }
-
-    private suspend fun getLastRemoteKey(state: PagingState<Int, ModelResult>): ArticleRemoteKey? {
-        return state.lastItemOrNull()?.let {
-            employeeDao.getAllREmoteKey(it.gender)
+            return MediatorResult.Error(e)
         }
     }
 

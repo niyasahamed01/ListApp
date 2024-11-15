@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">Listing App</string>
     <string name="search">Search Here</string>
+    <string name="no_data_found">No Data Found\n</string>
+    <string name="choose_theme_text">Choose theme</string>
+    <string name="retry">Retry</string>
+
 </resources>

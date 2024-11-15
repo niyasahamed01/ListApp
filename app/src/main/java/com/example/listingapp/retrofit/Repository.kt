@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 @ActivityRetainedScoped
 class Repository @Inject constructor(
-    private val remoteDataSource: ApiHelperImpl
+    private val apiHelperImpl: ApiHelperImpl
 ) : BaseApiResponse() {
 
     suspend fun getWeather(
@@ -21,7 +21,7 @@ class Repository @Inject constructor(
         key: String?
     ): Flow<NetworkResult<WeatherResponse?>> {
         return flow<NetworkResult<WeatherResponse?>> {
-            safeApiCall { remoteDataSource.getWeather(lat, long, key) }?.let { emit(it) }
+            emit(safeApiCall { apiHelperImpl.getWeather(lat, long, key) })
         }.flowOn(Dispatchers.IO)
     }
 

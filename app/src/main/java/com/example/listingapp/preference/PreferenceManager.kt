@@ -2,11 +2,13 @@ package com.example.listingapp.preference
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.appcompat.app.AppCompatDelegate
 import com.google.gson.GsonBuilder
 
 
 const val WEATHER_DATA = "weather_data"
-
+const val THEME_MODE = "theme_mode"
+const val NOTIFICATION_SHOWN_KEY = "notification_shown"
 /**
  * Preference manager class to store and retrieve data
  * @param context is required to the shared Preference
@@ -36,5 +38,28 @@ class PreferenceManager(context: Context) {
     inline fun <reified T> getModelValue(key: String): T {
         val value = preferences.getString(key, null)
         return GsonBuilder().create().fromJson(value, T::class.java)
+    }
+
+    fun getThemeMode(): Int {
+        return preferences.getInt(THEME_MODE, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+    }
+
+    /**
+     * Saves theme mode into the SharedPreferences.
+     *
+     * @param themeMode Theme mode to save.
+     */
+    fun saveThemeMode(themeMode: Int) {
+        preferences.edit().putInt(THEME_MODE, themeMode).apply()
+    }
+
+    // Check if the notification has been shown
+    fun hasNotificationBeenShown(): Boolean {
+        return preferences.getBoolean(NOTIFICATION_SHOWN_KEY, false)
+    }
+
+    // Set the notification shown flag
+    fun setNotificationShown(shown: Boolean) {
+        preferences.edit().putBoolean(NOTIFICATION_SHOWN_KEY, shown).apply()
     }
 }
