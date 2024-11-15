@@ -11,13 +11,13 @@ When an List Item is selected from RecyclerView it will load the detail page.
 
 The  List is cached into local DB, so the list of images and names are available offline.
 
-There also wheather api, we can watch the exact wheather condition along with lat and long with the correct attitude and along with user mobile location.
+There also weather api, we can watch the exact weather condition along with lat and long with the correct attitude and along with user mobile location.
 
 And also search the list.
 
 **Architecture**
 
-The app uses clean architecture with MVVM(Model View View Model) design pattern. MVVM provides better separation of concern, easier testing, Live data & lifecycle awareness, etc.
+The app uses clean architecture with MVVM (Model View View Model) design pattern. MVVM provides better separation of concern, easier testing, Live data & lifecycle awareness, etc.
 
 **UI**
 
@@ -82,11 +82,11 @@ Objects which can be observed by UI about changes.
 
 Stores and manages UI related data in a lifecycle aware way.
 
-![employeelist](https://github.com/user-attachments/assets/830361e1-e8b4-4647-866c-c26fa356ca7a)
+**Preference** 
 
-![employeedetail](https://github.com/user-attachments/assets/49927e7a-54ed-43e4-842a-4ec7f1fb9f6b)
+Preference is the basic building block of the Preference Library.
 
-![weather](https://github.com/user-attachments/assets/faa3389b-2f2d-459b-81f7-6f0f7e1966c7)
-
-![changetheme](https://github.com/user-attachments/assets/4205f09a-3954-4234-918f-c1ded3389b75)
-
+![employeelist](https://github.com/user-attachments/assets/9b5f4a8f-99f9-431b-9e0d-8a58bd49a5c8)
+![employeedetail](https://github.com/user-attachments/assets/d33fbe51-2ae5-4407-9524-d3daf18775e1)
+![weather](https://github.com/user-attachments/assets/a914f723-a525-4756-8354-8a353f2a1dbe)
+![changetheme](https://github.com/user-attachments/assets/fb43ab48-791f-4cf3-a4cb-98906a1ba16d)
